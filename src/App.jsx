@@ -1,8 +1,11 @@
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import PostList from "./components/PostList";
 import UserCard from "./components/UserCard";
+import AddPostForm from "./components/AddPostForm";
 
-const POSTS = [
+// ข้อมูลโพสต์เริ่มต้น (ของอาจารย์)
+const INITIAL_POSTS = [
   {
     id: 1,
     title: "React คืออะไร?",
@@ -25,6 +28,7 @@ const POSTS = [
   },
 ];
 
+// ข้อมูลสมาชิก (ใช้กับ UserCard)
 const USERS = [
   { id: 1, name: "สมชาย ใจดี", email: "somchai@dev.com" },
   { id: 2, name: "สมหญิง รักเรียน", email: "somying@dev.com" },
@@ -32,9 +36,39 @@ const USERS = [
 ];
 
 function App() {
+  // state เก็บโพสต์ทั้งหมด
+  const [posts, setPosts] = useState(INITIAL_POSTS);
+
+  // state เก็บ id ของโพสต์ที่กดถูกใจ
+  const [favorites, setFavorites] = useState([]);
+
+  // ฟังก์ชันกดถูกใจ / ยกเลิกถูกใจ
+  function handleToggleFavorite(postId) {
+    setFavorites(
+      (prev) =>
+        prev.includes(postId)
+          ? prev.filter((id) => id !== postId) // ลบออก
+          : [...prev, postId], // เพิ่มเข้า
+    );
+  }
+
+  // เพิ่มโพสต์ใหม่ (จาก AddPostForm)
+  function handleAddPost({ title, body }) {
+    const newPost = {
+      id: Date.now(), // ใช้เวลาเป็น id
+      title,
+      body,
+    };
+
+    // เพิ่มโพสต์ใหม่ไว้ด้านบน
+    setPosts((prev) => [newPost, ...prev]);
+  }
+
   return (
     <div>
-      <Navbar />
+      {/* Navbar แสดงจำนวนโพสต์ที่ถูกใจ */}
+      <Navbar favoriteCount={favorites.length} />
+
       <div
         style={{
           maxWidth: "900px",
@@ -45,12 +79,20 @@ function App() {
           gap: "2rem",
         }}
       >
-        {/* คอลัมน์ซ้าย: โพสต์ */}
+        {/* คอลัมน์ซ้าย (โพสต์) */}
         <div>
-          <PostList posts={POSTS} />
+          {/* ฟอร์มเพิ่มโพสต์ */}
+          <AddPostForm onAddPost={handleAddPost} />
+
+          {/* รายการโพสต์ */}
+          <PostList
+            posts={posts}
+            favorites={favorites}
+            onToggleFavorite={handleToggleFavorite}
+          />
         </div>
 
-        {/* คอลัมน์ขวา: สมาชิก */}
+        {/* คอลัมน์ขวา (สมาชิก) */}
         <div>
           <h2
             style={{
@@ -61,6 +103,8 @@ function App() {
           >
             สมาชิก
           </h2>
+
+          {/* แสดง UserCard ทีละคน */}
           {USERS.map((user) => (
             <UserCard key={user.id} name={user.name} email={user.email} />
           ))}
