@@ -1,28 +1,28 @@
-import { useState } from "react";
+import { useState } from "react"; // นำเข้าตัวช่วยสร้างตัวแปร (State) เพื่อให้ React จำค่าที่พิมพ์ได้
 
 function AddPostForm({ onAddPost }) {
-  // รับ props ฟังก์ชันจาก App.jsx
+  // สร้างคอมโพเนนต์ฟอร์ม โดยรับฟังก์ชัน onAddPost มาจากไฟล์หลัก (App.jsx) เพื่อส่งข้อมูลกลับไป
 
-  const [title, setTitle] = useState(""); // state เก็บหัวข้อโพสต์
-  const [body, setBody] = useState(""); // state เก็บเนื้อหาโพสต์
+  const [title, setTitle] = useState(""); // สร้างตัวแปร title เก็บหัวข้อโพสต์ (เริ่มจากว่างเปล่า)
+  const [body, setBody] = useState(""); // สร้างตัวแปร body เก็บเนื้อหาโพสต์ (เริ่มจากว่างเปล่า)
 
-  const MAX_TITLE = 100; // (Challenge) จำกัดหัวข้อไม่เกิน 100 ตัวอักษร
-  const remaining = MAX_TITLE - title.length; // คำนวณจำนวนตัวอักษรที่เหลือ
+  const MAX_TITLE = 100; // [Challenge] กำหนดตัวเลขสูงสุดที่ยอมให้พิมพ์หัวข้อคือ 100 ตัวอักษร
+  const remaining = MAX_TITLE - title.length; // [Challenge] คำนวณที่ว่างที่เหลือ (เอา 100 ลบจำนวนที่พิมพ์ไปแล้ว)
 
   function handleSubmit(e) {
-    e.preventDefault(); // ป้องกันหน้าเว็บรีเฟรชเมื่อกด submit
+    e.preventDefault(); // สั่งเบรกไม่ให้หน้าเว็บ Refresh (พฤติกรรมปกติของฟอร์ม) เพื่อให้เราจัดการข้อมูลเองได้
 
-    if (!title.trim() || !body.trim()) return; // ถ้าฟอร์มว่างไม่ให้ส่ง
+    if (!title.trim() || !body.trim()) return; // เช็คว่าถ้าช่องหัวข้อหรือเนื้อหาว่าง (หรือมีแต่ช่องว่าง) ให้หยุด ไม่ส่งข้อมูล
 
-    onAddPost({ title, body }); // ส่งข้อมูลโพสต์ไป App.jsx
+    onAddPost({ title, body }); // ส่ง "ก้อนข้อมูล" {หัวข้อ, เนื้อหา} กลับไปให้ App.jsx ผ่านฟังก์ชันที่รับมา
 
-    setTitle(""); // เคลียร์ form ช่องหัวข้อ
-    setBody(""); // เคลียร์ form ช่องเนื้อหา
+    setTitle(""); // พอกดโพสต์เสร็จ ให้ล้างตัวหนังสือในช่องหัวข้อทิ้ง
+    setBody(""); // พอกดโพสต์เสร็จ ให้ล้างตัวหนังสือในช่องเนื้อหาทิ้ง
   }
 
   return (
     <form
-      onSubmit={handleSubmit} // เมื่อกดโพสต์ให้เรียก handleSubmit
+      onSubmit={handleSubmit} // เมื่อผู้ใช้กดปุ่มส่งฟอร์ม ให้ไปรันฟังก์ชัน handleSubmit ด้านบน
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: "8px",
@@ -35,13 +35,13 @@ function AddPostForm({ onAddPost }) {
         เพิ่มโพสต์ใหม่
       </h3>
 
-      {/* ช่องพิมพ์หัวข้อโพสต์ */}
+      {/* --- ช่องพิมพ์หัวข้อโพสต์ --- */}
       <input
         type="text"
         placeholder="หัวข้อโพสต์"
-        value={title} // เชื่อมกับ state
-        maxLength={MAX_TITLE} // (Challenge) จำกัดตัวอักษร
-        onChange={(e) => setTitle(e.target.value)} // อัปเดต state เมื่อพิมพ์
+        value={title} // เชื่อมช่องพิมพ์เข้ากับตัวแปร title (เพื่อให้ React คุมค่าในช่องนี้)
+        maxLength={MAX_TITLE} // [Challenge] ล็อคหน้าบ้านเลยว่าห้ามพิมพ์เกิน 100 ตัวอักษร
+        onChange={(e) => setTitle(e.target.value)} // ทุกครั้งที่ขยับนิ้วพิมพ์ ให้เอาค่าใหม่ไปเก็บในตัวแปร title
         style={{
           width: "100%",
           padding: "0.5rem",
@@ -53,23 +53,24 @@ function AddPostForm({ onAddPost }) {
         }}
       />
 
-      {/* (Challenge) ตัวนับจำนวนตัวอักษร */}
+      {/* --- [Challenge] ตัวนับจำนวนตัวอักษร --- */}
       <div
         style={{
           textAlign: "right",
           fontSize: "0.8rem",
-          color: remaining < 10 ? "red" : "#718096", // เหลือน้อยกว่า 10 เปลี่ยนเป็นแดง
+          // ถ้าเหลือที่ว่างน้อยกว่า 10 ตัว ให้เปลี่ยนเป็น "สีแดง" เตือนผู้ใช้ ถ้ายังเหลือเยอะให้เป็น "สีเทา"
+          color: remaining < 10 ? "red" : "#718096",
           marginBottom: "0.5rem",
         }}
       >
-        {title.length}/{MAX_TITLE}
+        {title.length}/{MAX_TITLE} {/* แสดงผลแบบ: จำนวนที่พิมพ์ไปแล้ว / 100 */}
       </div>
 
-      {/* ช่องพิมพ์เนื้อหาโพสต์ */}
+      {/* --- ช่องพิมพ์เนื้อหาโพสต์ --- */}
       <textarea
         placeholder="เนื้อหาโพสต์"
-        value={body} // เชื่อมกับ state
-        onChange={(e) => setBody(e.target.value)} // อัปเดต state
+        value={body} // เชื่อมช่องพิมพ์เข้ากับตัวแปร body
+        onChange={(e) => setBody(e.target.value)} // ทุกครั้งที่พิมพ์ ให้เอาค่าใหม่ไปเก็บในตัวแปร body
         rows={3}
         style={{
           width: "100%",
@@ -83,9 +84,9 @@ function AddPostForm({ onAddPost }) {
         }}
       />
 
-      {/* ปุ่มโพสต์ */}
+      {/* --- ปุ่มกดส่ง --- */}
       <button
-        type="submit"
+        type="submit" // ระบุว่าเป็นปุ่มสำหรับส่งข้อมูลในฟอร์ม
         style={{
           background: "#1e40af",
           color: "white",
@@ -102,4 +103,4 @@ function AddPostForm({ onAddPost }) {
   );
 }
 
-export default AddPostForm; // export component
+export default AddPostForm; // ส่งคอมโพเนนต์นี้ออกไป เพื่อให้ไฟล์อื่นเรียกใช้งานได้

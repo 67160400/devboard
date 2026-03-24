@@ -1,21 +1,31 @@
 function LoadingSpinner() {
+  // สร้างคอมโพเนนต์ชื่อ LoadingSpinner สำหรับแสดงสถานะรอโหลด
+
   return (
     <div style={{ textAlign: "center", padding: "3rem", color: "#718096" }}>
+      {/* 1. กล่องนอกสุด: จัดให้ทุกอย่างอยู่กึ่งกลาง, เว้นระยะห่าง (padding), และกำหนดสีตัวอักษรเป็นสีเทา */}
+
       <div
         style={{
-          display: "inline-block",
-          width: "40px",
-          height: "40px",
-          border: "4px solid #e2e8f0",
-          borderTopColor: "#1e40af",
-          borderRadius: "50%",
-          animation: "spin 0.8s linear infinite",
+          display: "inline-block", // กำหนดให้กล่องนี้เรียงตัวเหมือนตัวหนังสือ (เพื่อให้สั่งจัดกึ่งกลางได้ง่าย)
+          width: "40px", // กำหนดความกว้างของวงกลม 40 พิกเซล
+          height: "40px", // กำหนดความสูงของวงกลม 40 พิกเซล
+          border: "4px solid #e2e8f0", // สร้างเส้นขอบหนา 4px สีเทาอ่อน (เป็นฐานของวงกลม)
+          borderTopColor: "#1e40af", // เปลี่ยนเฉพาะเส้นขอบ "ด้านบน" ให้เป็นสีน้ำเงิน (เพื่อให้เห็นส่วนที่ต่างตอนหมุน)
+          borderRadius: "50%", // ทำให้กล่องสี่เหลี่ยมกลายเป็น "วงกลม"
+          animation: "spin 0.8s linear infinite", // สั่งให้เล่นแอนิเมชันชื่อ 'spin' นาน 0.8 วินาที แบบความเร็วคงที่ และหมุนไปเรื่อยๆ ไม่หยุด
         }}
       />
+
       <p style={{ marginTop: "1rem" }}>กำลังโหลด...</p>
+      {/* แสดงข้อความ "กำลังโหลด..." และเว้นระยะห่างจากตัวหมุนด้านบนนิดหน่อย */}
+
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      {/* คำสั่ง CSS พิเศษ (Keyframes): 
+         บอกว่าการหมุน (spin) คือการเปลี่ยนจากจุดเริ่มต้น ไปจนถึงจุดจบที่ 'หมุนครบ 360 องศา'
+      */}
     </div>
   );
 }
 
-export default LoadingSpinner;
+export default LoadingSpinner; // ส่งออกคอมโพเนนต์ไปให้ไฟล์ PostList หรือไฟล์อื่นๆ ใช้งาน
